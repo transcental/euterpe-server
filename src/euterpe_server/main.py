@@ -76,10 +76,17 @@ async def submit_pairing_code(sid, data):
     if mac_id is not None:
         new_token = create_access_token(mac_id)
         
+        # Notify the Android device
         await sio.emit("pairing_success", {
             "token": new_token,
             "user_id": mac_id
         }, to=sid)
+        
+        # Notify the Mac device (in its room)
+        await sio.emit("pairing_success", {
+            "token": new_token,
+            "user_id": mac_id
+        }, room=mac_id, skip_sid=sid)
         
         await sio.enter_room(sid, mac_id)
         await sio.save_session(sid, {"user_id": mac_id})
