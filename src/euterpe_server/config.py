@@ -1,10 +1,8 @@
+from pydantic import RedisDsn
 from pydantic_settings import BaseSettings
 
 class RedisConfig(BaseSettings):        
-    host: str = "localhost"
-    port: int = 6379
-    db: int = 0
-    password: str | None = None
+    url: RedisDsn
 
 
 class Config(BaseSettings):

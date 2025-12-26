@@ -1,4 +1,3 @@
-import os
 import redis.asyncio as redis
 from typing import Optional
 
@@ -11,13 +10,11 @@ class RedisClient:
         
     async def connect(self):
         """Initialise connection pool"""
-        self.client = Redis(
-            host=config.redis.host,
-            port=config.redis.port,
-            db=config.redis.db,
-            password=config.redis.password,
+        self.client = redis.from_url(
+            config.redis.url,
             decode_responses=True
         )
+        self.client.ping()
         
     async def set_pairing_code(self, code: str, mac_id: str, ex: int = 300):
         """Save pairing code for default 5mins"""
