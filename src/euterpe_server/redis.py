@@ -11,7 +11,7 @@ class RedisClient:
     async def connect(self):
         """Initialise connection pool"""
         self.client = redis.from_url(
-            config.redis.url,
+            config.redis.url.encoded_string(),
             decode_responses=True
         )
         self.client.ping()
