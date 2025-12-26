@@ -1,0 +1,23 @@
+[project]
+name = "euterpe-server"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "transcental", email = "amber@transcental.dev" }
+]
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi[standard]>=0.127.1",
+    "pydantic-settings>=2.12.0",
+    "pyjwt>=2.10.1",
+    "python-socketio[asyncio]>=5.16.0",
+    "uvicorn[standard]>=0.40.0",
+]
+
+[project.scripts]
+euterpe-server = "euterpe_server.main:run"
+
+[build-system]
+requires = ["uv_build>=0.9.17,<0.10.0"]
+build-backend = "uv_build"
