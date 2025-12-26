@@ -35,7 +35,13 @@ async def register_device():
 
 @sio.event
 async def connect(sid, environ, auth):
+    # Check auth object first (Android), then query params (macOS)
     token = auth.get("token") if auth else None
+    if not token:
+        from urllib.parse import parse_qs
+        query_string = environ.get("QUERY_STRING", "")
+        params = parse_qs(query_string)
+        token = params.get("token", [None])[0]
     
     if not token:
         print(f"anonymous connection: {sid}")
@@ -67,7 +73,7 @@ async def submit_pairing_code(sid, data):
     code = data.get("code")
     
     mac_id = await db.get_mac_id_by_code(code)
-    if mac_id:
+    if mac_id is not None:
         new_token = create_access_token(mac_id)
         
         await sio.emit("pairing_success", {
