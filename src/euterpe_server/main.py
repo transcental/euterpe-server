@@ -113,7 +113,19 @@ async def timestamp_update(sid, data):
 @sio.event
 async def execute_command(sid, data):
     session = await sio.get_session(sid)
-    await sio.emit("execute_command", data, room=session["user_id"], skip_sid=sid)
+    user_id = session.get("user_id") if session else None
+    if not user_id:
+        return
+    await sio.emit("execute_command", data, room=user_id, skip_sid=sid)
+
+
+@sio.event
+async def seek(sid, data):
+    session = await sio.get_session(sid)
+    user_id = session.get("user_id") if session else None
+    if not user_id:
+        return
+    await sio.emit("seek", data, room=user_id, skip_sid=sid)
 
 socket_app = socketio.ASGIApp(sio, app)
 
