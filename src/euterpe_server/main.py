@@ -136,6 +136,19 @@ async def request_sync(sid):
         return
     await sio.emit("request_sync", {}, room=user_id, skip_sid=sid)
 
+
+@sio.event
+async def device_info(sid, data):
+    session = await sio.get_session(sid)
+    user_id = session.get("user_id") if session else None
+    if not user_id:
+        return
+    
+    device_name = data.get("name", "Unknown Device")
+    await sio.save_session(sid, {"user_id": user_id, "device_name": device_name})
+    await sio.emit("device_info", {"name": device_name}, room=user_id, skip_sid=sid)
+    print(f"Device {device_name} connected for user {user_id}")
+
 socket_app = socketio.ASGIApp(sio, app)
 
 
