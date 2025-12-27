@@ -129,6 +129,15 @@ async def seek(sid, data):
 
 
 @sio.event
+async def set_volume(sid, data):
+    session = await sio.get_session(sid)
+    user_id = session.get("user_id") if session else None
+    if not user_id:
+        return
+    await sio.emit("set_volume", data, room=user_id, skip_sid=sid)
+
+
+@sio.event
 async def request_sync(sid):
     session = await sio.get_session(sid)
     user_id = session.get("user_id") if session else None
